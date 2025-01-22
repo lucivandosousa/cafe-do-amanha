@@ -1,8 +1,12 @@
 .not-found {
-  text-align: center;
   padding: 50px;
   color: #4a2c2a;
+  background-color: #f3e9e1;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .not-found h1 {
@@ -12,4 +16,10 @@
 
 .not-found p {
   font-size: 1.2rem;
+}
+
+.not-found img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
 }
