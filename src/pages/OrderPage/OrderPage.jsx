@@ -8,11 +8,12 @@ export default function OrderPage() {
     tableNumber: '',
     items: []
   });
-
   const [showModal, setShowModal] = useState(false);
   const [currentCategory, setCurrentCategory] = useState('');
   const [currentItem, setCurrentItem] = useState('');
   const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [errorName, setErrorName] = useState(null);
+  const [errorTableNumber, setErrorTableNumber] = useState(null);
 
   const menuItems = {
     cafes: {
@@ -53,6 +54,37 @@ export default function OrderPage() {
     }
   };
 
+  const erros = {
+    name: /^[a-zA-Z]+$/,
+    tableNumber: /^[0-9]+$/,
+  }
+
+  function validateName(name) {
+    if (name.length === 0) {
+      setErrorName('O nome é obrigatório.');
+    } else if (name.length < 2) {
+      setErrorName('O nome deve conter pelo menos 2 caracteres.');
+    } else if (!erros.name.test(name)) {
+      setErrorName('O nome deve conter apenas letras.');
+    } else {
+      setErrorName(null);
+    }
+
+    return erros.name.test(name);
+  }
+
+  function validateTableNumber(tableNumber) {
+    if (tableNumber.length === 0) {
+      setErrorTableNumber('O número da mesa é obrigatório.');
+    } else if (!erros.tableNumber.test(tableNumber)) {
+      setErrorTableNumber('O número da mesa deve conter apenas números.');
+    } else {
+      setErrorTableNumber(null);
+    }
+
+    return erros.tableNumber.test(tableNumber);
+  }
+
   function calculateTotal(items) {
     return items.reduce((total, item) => {
       const price = menuItems[item.category]?.[item.name] || 0;
@@ -61,6 +93,14 @@ export default function OrderPage() {
   };
 
   function handleCategoryClick(category) {
+    validateName(order.name);
+    validateTableNumber(order.tableNumber);
+
+    if (!validateName(order.name) || !validateTableNumber(order.tableNumber)) {
+      alert('Por favor, preencha todos os campos corretamente antes de continuar.');
+      return;
+    }
+
     setCurrentCategory(category);
     setCurrentItem('');
     setCurrentQuantity(1);
@@ -100,10 +140,28 @@ export default function OrderPage() {
     setCurrentItem('');
     setCurrentQuantity(1);
     setShowModal(false);
+    setErrorName(null);
+    setErrorTableNumber(null);
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    validateName(order.name);
+    validateTableNumber(order.tableNumber);
+
+    if (!validateName(order.name) || !validateTableNumber(order.tableNumber)) {
+      alert('Por favor, preencha todos os campos corretamente antes de continuar.');
+      return;
+    }
+
+    const totalOrder = calculateTotal(order.items);
+
+    if (totalOrder === 0) {
+      alert('Por favor, selecione pelo menos um item antes de enviar o pedido.');
+      return;
+    }
+
     alert(`Pedido enviado com sucesso! Valor total: R$ ${calculateTotal(order.items).toFixed(2)}`);
     setOrder({
       name: '',
@@ -124,8 +182,9 @@ export default function OrderPage() {
             name="name"
             value={order.name}
             onChange={(e) => setOrder({ ...order, name: e.target.value })}
-            required
+            onBlur={(e) => validateName(e.target.value)}
           />
+          {errorName && <p className="error">{errorName}</p>}
         </div>
 
         <div className="form-group">
@@ -136,8 +195,9 @@ export default function OrderPage() {
             name="tableNumber"
             value={order.tableNumber}
             onChange={(e) => setOrder({ ...order, tableNumber: e.target.value })}
-            required
+            onBlur={(e) => validateTableNumber(e.target.value)}
           />
+          {errorTableNumber && <p className="error">{errorTableNumber}</p>}
         </div>
 
         <div className="menu-category-list">
