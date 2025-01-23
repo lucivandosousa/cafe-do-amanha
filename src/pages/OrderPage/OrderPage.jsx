@@ -143,7 +143,24 @@ export default function OrderPage() {
         <div className="menu-category-list">
           {Object.keys(menuItems).map((category) => (
             <Button key={category} onClick={() => handleCategoryClick(category)} className="category-button">
-              {category.charAt(0).toUpperCase() + category.slice(1)}
+              {
+                (() => {
+                  switch (category) {
+                    case 'cafes':
+                      return 'Cafés';
+                    case 'sobremesas':
+                      return 'Sobremesas';
+                    case 'especiais':
+                      return 'Especiais';
+                    case 'bebidasGeladas':
+                      return 'Bebidas Geladas';
+                    case 'chas':
+                      return 'Chás';
+                    default:
+                      return category;
+                  }
+                })()
+              }
             </Button>
           ))}
         </div>
