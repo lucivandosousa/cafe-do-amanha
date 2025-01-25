@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import './OrderPage.css';
 
@@ -14,45 +14,25 @@ export default function OrderPage() {
   const [currentQuantity, setCurrentQuantity] = useState(1);
   const [errorName, setErrorName] = useState(null);
   const [errorTableNumber, setErrorTableNumber] = useState(null);
+  const [menuItems, setMenuItems] = useState({});
 
-  const menuItems = {
-    cafes: {
-      'Águas de Março': 5.00,
-      'Sampa': 6.50,
-      'Garota de Ipanema': 7.00,
-      'Chega de Saudade': 6.00,
-      'Carinhoso': 8.00,
-      'Cappuccino Malandragem': 9.00,
-    },
-    sobremesas: {
-      'Doce de Maracujá': 8.00,
-      'Romeu e Julieta': 9.00,
-      'Chão de Giz': 10.00,
-      'Bolinho de Chuva': 6.50,
-      'Coração Bobo': 7.50,
-      'Pettit Gateau Ilegais': 12.00,
-    },
-    especiais: {
-      'Tarde em Itapoã': 12.00,
-      'O Canto da Cidade': 10.00,
-      'Fora da Ordem': 11.50,
-      'O Leãozinho': 9.50,
-    },
-    bebidasGeladas: {
-      'Sorvete de Baunilha': 7.00,
-      'Milk Shake de Chocolate': 10.00,
-      'Milk Shake de Morango': 10.00,
-      'Vitamina de Banana': 8.00,
-      'Vitamina de Morango': 8.50,
-    },
-    chas: {
-      'Chá de Hortelã': 4.50,
-      'Chá Verde': 5.00,
-      'Chá de Camomila': 4.50,
-      'Chá de Frutas Vermelhas': 6.00,
-      'Chá de Gengibre e Limão': 5.50,
-    }
-  };
+  useEffect(() => {
+    fetch('http://localhost:3000/products')
+      .then((response) => response.json())
+      .then((data) => {
+        const products = data.reduce((acc, category) => {
+          acc[category.category] = category.items.reduce((itemsAcc, item) => {
+            itemsAcc[item.name] = item.price;
+            return itemsAcc;
+          }, {});
+          return acc;
+        }, {});
+        setMenuItems(products);
+      })
+      .catch((error) => {
+        console.error('Erro ao carregar produtos:', error);
+      });
+  }, []);
 
   const erros = {
     name: /^[a-zA-Z]+$/,
@@ -162,12 +142,23 @@ export default function OrderPage() {
       return;
     }
 
-    alert(`Pedido enviado com sucesso! Valor total: R$ ${calculateTotal(order.items).toFixed(2)}`);
-    setOrder({
-      name: '',
-      tableNumber: '',
-      items: []
-    });
+    try {
+      fetch('http://localhost:3000/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+      })
+      alert(`Pedido enviado com sucesso! Valor total: R$ ${totalOrder.toFixed(2)}`);
+      setOrder({
+        name: '',
+        tableNumber: '',
+        items: []
+      });
+    } catch (error) {
+      console.error('Erro ao enviar pedido:', error);
+    }
   };
 
   return (
