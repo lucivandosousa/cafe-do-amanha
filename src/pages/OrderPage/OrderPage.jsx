@@ -35,7 +35,7 @@ export default function OrderPage() {
   }, []);
 
   const erros = {
-    name: /^[a-zA-Z]+$/,
+    name: /^[a-zA-Zà-ú]+( [a-zA-Zà-ú]+)*$/,
     tableNumber: /^[0-9]+$/,
   }
 
