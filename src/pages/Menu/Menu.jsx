@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import './Menu.css';
 
@@ -10,6 +10,16 @@ import coffee5 from '../../assets/images/cha.jpeg';
 
 export default function Menu() {
   const [currentImage, setCurrentImage] = useState(coffee1);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:3000/products')
+      .then((response) => response.json())
+      .then((data) => {
+        setProducts(data);
+      })
+      .catch((error) => console.error('Erro ao carregar produtos:', error));
+  }, []);
 
   return (
     <div className="menu-container">
@@ -49,54 +59,36 @@ export default function Menu() {
               }
             }}
           >
-            <Tab eventKey="cafes" title="Cafés ☕">
-              <ul className="menu-list">
-                <li>Águas de Março <span>R$ 5,00</span></li>
-                <li>Sampa <span>R$ 6,50</span></li>
-                <li>Garota de Ipanema <span>R$ 7,00</span></li>
-                <li>Chega de Saudade <span>R$ 6,00</span></li>
-                <li>Carinhoso <span>R$ 8,00</span></li>
-                <li>Cappuccino Malandragem <span>R$ 9,00</span></li>
-              </ul>
-            </Tab>
-            <Tab eventKey="sobremesas" title="Sobremesas 🍰">
-              <ul className="menu-list">
-                <li>Doce de Maracujá <span>R$ 8,00</span></li>
-                <li>Romeu e Julieta <span>R$ 9,00</span></li>
-                <li>Chão de Giz <span>R$ 10,00</span></li>
-                <li>Bolinho de Chuva <span>R$ 6,50</span></li>
-                <li>Coração Bobo <span>R$ 7,50</span></li>
-                <li>Pettit Gateau Ilegais <span>R$ 12,00</span></li>
-              </ul>
-            </Tab>
-            <Tab eventKey="especiais" title="Especiais 🎵">
-              <ul className="menu-list">
-                <li>Tarde em Itapoã <span>R$ 12,00</span></li>
-                <li>O Canto da Cidade <span>R$ 10,00</span></li>
-                <li>Fora da Ordem <span>R$ 11,50</span></li>
-                <li>O Leãozinho <span>R$ 9,50</span></li>
-                <li>Iron Maiden<span>R$ 11,50</span></li>
-                <li>Metallica <span>R$ 9,50</span></li>
-              </ul>
-            </Tab>
-            <Tab eventKey="bebidas-geladas" title="Bebidas Geladas 🥤">
-              <ul className="menu-list">
-                <li>Sorvete de Baunilha <span>R$ 7,00</span></li>
-                <li>Milk Shake de Chocolate <span>R$ 10,00</span></li>
-                <li>Milk Shake de Morango <span>R$ 10,00</span></li>
-                <li>Vitamina de Banana <span>R$ 8,00</span></li>
-                <li>Vitamina de Morango <span>R$ 8,50</span></li>
-              </ul>
-            </Tab>
-            <Tab eventKey="chas" title="Chás 🍵">
-              <ul className="menu-list">
-                <li>Chá de Hortelã <span>R$ 4,50</span></li>
-                <li>Chá Verde <span>R$ 5,00</span></li>
-                <li>Chá de Camomila <span>R$ 4,50</span></li>
-                <li>Chá de Frutas Vermelhas <span>R$ 6,00</span></li>
-                <li>Chá de Gengibre e Limão <span>R$ 5,50</span></li>
-              </ul>
-            </Tab>
+            {products && products.map((product) => (
+              <Tab
+                key={product.id}
+                eventKey={product.category}
+                title={(
+                  () => {
+                    switch (product.category) {
+                      case 'cafes':
+                        return 'Cafés';
+                      case 'sobremesas':
+                        return 'Sobremesas';
+                      case 'especiais':
+                        return 'Especiais';
+                      case 'bebidasGeladas':
+                        return 'Bebidas Geladas';
+                      case 'chas':
+                        return 'Chás';
+                    }
+                  }
+                )()}
+              >
+                <ul className="menu-list">
+                  {product.items.map((item, index) => (
+                    <li key={index}>
+                      {item.name} <span>R$ {item.price.toFixed(2)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Tab>
+            ))}
           </Tabs>
         </div>
       </div>
