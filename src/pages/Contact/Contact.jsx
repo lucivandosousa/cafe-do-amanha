@@ -124,7 +124,7 @@ export default function Contact() {
           </div>
           <div className="form-group">
             <label htmlFor="message">Mensagem:</label>
-            <textarea id="message" name="message" rows="5" value={message} onChange={(e) => setMessage(e.target.value)} onBlur={() => validateMessage(message)}></textarea>
+            <textarea id="message" name="message" rows="4" value={message} onChange={(e) => setMessage(e.target.value)} onBlur={() => validateMessage(message)}></textarea>
             {errorMessage && <p className="error">{errorMessage}</p>}
           </div>
           <button type="submit">Enviar Mensagem</button>

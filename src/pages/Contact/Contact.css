@@ -1,4 +1,5 @@
 .contact-section {
+  height: 100%;
   padding: 50px 20px;
   background-color: #f3e9e1;
   color: #4a2c2a;
@@ -23,12 +24,12 @@
 }
 
 .contact-info {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   font-size: 1.1rem;
 }
 
 .contact-info p {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .contact-info strong {

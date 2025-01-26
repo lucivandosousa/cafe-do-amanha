@@ -1,3 +1,7 @@
+body {
+  background-color: #f3e9e1;
+}
+
 .error {
   font-size: small !important;
   color: red;
