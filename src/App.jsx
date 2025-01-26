@@ -7,6 +7,8 @@ import Stories from "./pages/Stories/Stories"
 import Contact from "./pages/Contact/Contact"
 import NotFound from "./pages/NotFound/NotFound"
 import PageDefault from "./pages/PageDefault/PageDefault"
+import { Flip, ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 export default function App() {
   return (
@@ -22,6 +24,11 @@ export default function App() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      <ToastContainer
+        autoClose={3000}
+        transition={Flip}
+      />
     </BrowserRouter>
   )
 }

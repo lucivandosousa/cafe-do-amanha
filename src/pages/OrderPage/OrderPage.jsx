@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import './OrderPage.css';
+import { toast } from 'react-toastify';
 
 export default function OrderPage() {
   const [order, setOrder] = useState({
@@ -77,7 +78,7 @@ export default function OrderPage() {
     validateTableNumber(order.tableNumber);
 
     if (!validateName(order.name) || !validateTableNumber(order.tableNumber)) {
-      alert('Por favor, preencha todos os campos corretamente antes de continuar.');
+      toast.warning('Por favor, preencha todos os campos corretamente antes de continuar.');
       return;
     }
 
@@ -89,7 +90,7 @@ export default function OrderPage() {
 
   function handleAddItem() {
     if (!currentItem || currentQuantity <= 0) {
-      alert('Por favor, selecione um item e uma quantidade válida.');
+      toast.warning('Por favor, selecione um item e uma quantidade válida.');
       return;
     }
 
@@ -131,14 +132,14 @@ export default function OrderPage() {
     validateTableNumber(order.tableNumber);
 
     if (!validateName(order.name) || !validateTableNumber(order.tableNumber)) {
-      alert('Por favor, preencha todos os campos corretamente antes de continuar.');
+      toast.warning('Por favor, preencha todos os campos corretamente antes de continuar.');
       return;
     }
 
     const totalOrder = calculateTotal(order.items);
 
     if (totalOrder === 0) {
-      alert('Por favor, selecione pelo menos um item antes de enviar o pedido.');
+      toast.warning('Por favor, selecione pelo menos um item antes de enviar o pedido.');
       return;
     }
 
@@ -150,7 +151,7 @@ export default function OrderPage() {
         },
         body: JSON.stringify(order)
       })
-      alert(`Pedido enviado com sucesso! Valor total: R$ ${totalOrder.toFixed(2)}`);
+      toast.success(`Pedido enviado com sucesso! Valor total: R$ ${totalOrder.toFixed(2)}`);
       setOrder({
         name: '',
         tableNumber: '',
